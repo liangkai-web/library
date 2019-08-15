@@ -1,0 +1,65 @@
+*{padding: 0;margin: 0;}
+.user_top{
+   width:100%;
+   height:80px;
+   line-height:80px;
+   text-align:center;
+}
+.history_link{
+   text-align: right;
+}
+#query_book{
+   width:650px;; 
+   margin:0 auto;
+}
+#q_msg,#tip_m{
+   width:30%
+   height:20px;
+   line-height: 20px;
+   text-align:center;
+   color:red;
+   margin:o auto;
+}
+.result_div{
+  width:650px;
+  margin:0 auto;
+}
+.table_query{
+  width:100%;
+  text-align: center;
+  background-color:rgba(207,207,207,0.5);
+}
+#show_bookList tr th,#show_historyList tr th,#show_bookList tr td,#show_historyList tr td{
+  border:1px solid #ccc;
+}
+#det_book{
+  height:100%;
+  width:100%;
+  background-color:rgba(0,0,0,0.6);
+  position:absolute;
+  bottom:0;
+  left:0;
+}
+.show_det{
+  width:55%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -80%);
+}
+.det_btn_div{
+  height:25px;
+  width:100%;
+  margin:5px; 
+  text-align:center;
+}
+.det_btn{
+  width:60px;
+  border-radius: 5px;
+}
+#show_bookList tbody button{
+	border-radius: 5px;
+	color:#fff;
+	background-color:rgba(0,0,0,0.5);
+	
+}

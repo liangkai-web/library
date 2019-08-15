@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向接口 -->
+<mapper namespace="com.dao.ItemMapper">
+	<!-- id：唯一标识一个statement #{}：表示一个占位符，如果#{}中传入简单类型的参数，#{}中的名称随意 parameterType：输入参数的类型，通过#{}接收parameterType输入的参数 
+		resultType：输出结果类型，不管返回是多条还是单条，指定单条记录映射的pojo类型 resultMap:输出结果类型 -->
+
+	<!--根据用户名称查询用户信息，可能返回多条 ${}：表示sql的拼接，通过${}接收参数，将参数的内容不加任何修饰拼接在sql中。 -->
+
+	<select id="getItemList" parameterType="com.pojo.Item"
+		resultType="com.pojo.Item">
+		select * from item 
+	</select>
+	
+	<select id="getItemInfo" parameterType="com.pojo.Item"
+		 resultMap="itemResultMap">
+		select * from item i,booktype bt where 
+		i.typeid=bt.typeid and i.itemid=#{itemid}
+	</select>
+	<resultMap type="com.pojo.Item" id="itemResultMap">
+		<id column="itemid" property="itemid"/>
+		<result column="typeid" property="typeid"/>
+		<result column="iname" property="iname"/>
+		<result column="kcnum" property="kcnum"/>
+		<result column="description" property="description"/>
+		<result column="author" property="author"/>
+		<result column="publish" property="publish"/>
+		<association property="booktype" javaType="com.pojo.BookType">
+			<id column="typeid" property="typeid"/>
+			<result column="typename" property="typename"/>
+		</association>
+	</resultMap>
+
+	<select id="getBookStatus" parameterType="com.pojo.Item"
+		resultMap="bookStatusResultMap">
+		select * from item i,book b where i.itemid=b.itemid and b.bid=(select
+		min(b.bid) from book b where b.status=0 and b.itemid=#{itemid}) and i.itemid=#{itemid}
+	</select>
+	<resultMap type="com.pojo.Item" id="bookStatusResultMap">
+		<id column="itemid" property="itemid" />
+		<collection property="book" ofType="com.pojo.Book">
+			<id column="bid" property="bid" />
+			<result column="status" property="status" />
+		</collection>
+	</resultMap>
+	
+	<update id="updateItemNum" parameterType="map">
+		update item set kcnum=kcnum-1,jcnum=jcnum+1 where
+		itemid=#{itemid}
+	</update>
+	
+	
+	<insert id="insert" parameterType="map">
+		insert into item(iname,typeid,jcnum,kcnum,description,author,publish)
+		values(#{iname},#{typeid},#{jcnum},#{kcnum},#{description},#{author},#{publish})
+	</insert>
+	
+	<select id="getItem" parameterType="com.pojo.Item" resultType="com.pojo.Item">
+		select * from item where iname=#{iname} or itemid=#{itemid}
+	</select>
+	
+	<update id="update" parameterType="map">
+		update item set kcnum=#{kcnum} where itemid=#{itemid}
+	</update>
+</mapper>

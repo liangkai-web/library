@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+				   <!--指向接口 -->
+<mapper namespace="com.dao.BlogMapper">
+    <!--  
+      id：唯一标识一个statement  
+      #{}：表示一个占位符，如果#{}中传入简单类型的参数，#{}中的名称随意  
+      parameterType：输入参数的类型，通过#{}接收parameterType输入的参数  
+      resultType：输出结果类型，不管返回是多条还是单条，指定单条记录映射的pojo类型  
+      resultMap:输出结果类型
+    -->	
+	
+	<select id="getBorrowHistory" resultMap="blogListResultMap">
+       select b.bid,b.bname,bl.uid,bl.bid,bl.btype,bl.time from book b,blog bl where b.bid=bl.bid and bl.uid=#{uid}
+    </select>
+    <resultMap type="com.pojo.Blog" id="blogListResultMap">
+       <id property="borid" column="borid"></id>
+       <result property="uid" column="uid"></result>
+       <result property="bid" column="bid"></result>
+       <result property="btype" column="btype"></result>
+       <result property="time" column="time"></result>
+       <association property="book" javaType="com.pojo.Book">
+           <id property="bid" column="bid"></id>
+           <result property="bname" column="bname" />
+       </association>
+    </resultMap>   
+    
+    <insert id="updateBlog" parameterType="map">
+		insert into blog(uid,bid,btype,time)
+		values(#{uid},#{bid},1,#{time})
+	</insert>
+    
+    <insert id="insert" parameterType="map">
+		insert into blog(uid,bid,btype,time) values(#{uid},#{bid},#{btype},#{time})
+	</insert>
+	
+	<select id="getBLogList" parameterType="com.pojo.Page" resultMap="blogResultMap">
+		select bl.borid,bl.uid,bl.bid,bl.btype,bl.time,u.uid,u.username,b.bid,b.bname from blog bl,user u,book b
+		where bl.uid=u.uid and bl.bid=b.bid	
+		<if test="puid !=null and puid !=0">
+			and bl.uid=#{puid}
+		</if>
+		<if test="pbid !=null and pbid!=0">
+			and bl.bid=#{pbid}
+		</if>
+		<if test="pbtype !=null and pbtype!=0">
+			and bl.btype=#{pbtype}
+		</if>
+		limit #{startRow},#{pageSize}	
+	</select>
+
+	<select id="searchTotalCount" parameterType="com.pojo.Page"
+		resultType="java.lang.Integer">
+		select count(borid) from blog
+		<where>
+			<if test="puid !=null and puid !=0">
+				and uid=#{puid}
+			</if>
+			<if test="pbid !=null and pbid!=0">
+				and bid=#{pbid}
+			</if>
+			<if test="pbtype !=null and pbtype!=0">
+				and btype=#{pbtype}
+			</if>
+		</where>
+	</select>
+	
+	<resultMap type="com.pojo.Blog" id="blogResultMap">
+		<id property="borid" column="borid"/>
+		<result property="uid" column="uid"/>
+		<result property="bid" column="bid"/>
+		<result property="btype" column="btype"/>
+		<result property="time" column="time"/>
+		<association property="user" javaType="com.pojo.User">
+			<id property="uid" column="uid"/>
+			<result property="username" column="username"/>
+		</association>
+		<association property="book" javaType="com.pojo.Book">
+			<id property="bid" column="bid"/>
+			<result property="bname" column="bname"/>
+		</association>
+	</resultMap>
+</mapper>
