@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+				   <!--指向接口 -->
+<mapper namespace="com.dao.QueryMapper">
+    <!--  
+      id：唯一标识一个statement  
+      #{}：表示一个占位符，如果#{}中传入简单类型的参数，#{}中的名称随意  
+      parameterType：输入参数的类型，通过#{}接收parameterType输入的参数  
+      resultType：输出结果类型，不管返回是多条还是单条，指定单条记录映射的pojo类型  
+      resultMap:输出结果类型
+    -->	
+    
+	 <!-- 一个书目对应 --> 
+	<select id="getBookList" resultMap="bookResultMap">
+       select t.typeid,t.typename,i.itemid,i.iname,i.typeid,i.kcnum,i.author,i.publish from booktype t,item i 
+       <where>
+           i.typeid=t.typeid
+           <if test ="typeid !=null and typeid !=''">
+               and i.typeid=#{typeid}
+           </if>
+           <if test="iname !=null and iname!=''">
+               and i.iname=#{iname}
+           </if>
+           <if test="author !=null and author !=''">
+               and i.author=#{author}
+           </if>
+       </where>
+    </select>
+    <resultMap type="com.pojo.Item" id="bookResultMap">
+        <id property="itemid" column="itemid" />
+        <result property="iname" column="iname" ></result>
+        <result property="typeid" column="typeid" ></result>
+        <result property="kcnum" column="kcnum" ></result>
+        <result property="author" column="author" ></result>
+        <result property="publish" column="publish" ></result>
+        <association property="booktype" javaType="com.pojo.BookType">
+           <id property="typeid" column="typeid"></id>
+           <result property="typename" column="typename"></result>
+        </association>
+    </resultMap>
+    
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向接口 -->
+<mapper namespace="com.dao.UserMapper">
+	<!-- id：唯一标识一个statement #{}：表示一个占位符，如果#{}中传入简单类型的参数，#{}中的名称随意 parameterType：输入参数的类型，通过#{}接收parameterType输入的参数 
+		resultType：输出结果类型，不管返回是多条还是单条，指定单条记录映射的pojo类型 resultMap:输出结果类型 -->
+
+	<!--根据用户名称查询用户信息，可能返回多条 ${}：表示sql的拼接，通过${}接收参数，将参数的内容不加任何修饰拼接在sql中。 -->
+
+	<select id="getUser" parameterType="com.pojo.User"
+		resultType="com.pojo.User">
+		select * from user u where
+		u.username=#{username}
+		and u.password=#{password}
+	</select>
+	
+	<update id="updateUser" parameterType="map">
+		update user set yjnum=yjnum+1
+		where uid=#{uid} and yjnum=#{yjnum}
+	</update>
+	
+	  <insert id="insert" parameterType="map">
+          insert into user(uid,username,password,phone,type,regtime,isvalid,kjnum,yjnum,fine) 
+          values(#{uid},#{username},#{password},#{phone},#{type},#{regtime},#{isvalid},#{kjnum},#{yjnum},#{fine})       
+    </insert> 	
+    
+     <update id="update2" parameterType="map">
+        update user set isvalid=#{isvalid} where username=#{username}
+    </update>
+ 
+     <update id="update1" parameterType="map">
+        update user set kjnum=#{kjnum} where username=#{username}
+    </update>
+    
+      <select id="checkUsername" parameterType="java.lang.String" resultType="Integer">
+			select count(*) from user u where u.username=#{username}	
+        </select>
+	
+	<update id="update" parameterType="map">
+		update user 
+		<trim prefix="set" prefixOverrides=",">
+			<if test="yjnum !=null">
+				,yjnum=#{yjnum}
+			</if>
+			<if test="fine !=null">
+				,fine=#{fine}
+			</if>
+		</trim>
+		where uid=#{uid}
+	</update>
+	<update id="xgUser" parameterType="map">
+	   update user set password=#{password},phone=#{phone} where username=#{username}
+	</update>
+	
+	<select id="getUser2" parameterType="com.pojo.User" resultType="com.pojo.User">
+		select * from user where uid=#{uid}
+	</select>
+</mapper>
